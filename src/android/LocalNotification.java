@@ -3,7 +3,6 @@ package com.phonegap.plugins.localnotification;
 import java.util.Calendar;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,7 +31,7 @@ public class LocalNotification extends CordovaPlugin {
     private AlarmHelper alarm = null;
 
     @Override
-    public boolean execute(String action, final JSONArray optionsArr, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray optionsArr, CallbackContext callbackContext) {
     alarm = new AlarmHelper(cordova.getActivity());
     Log.d(PLUGIN_NAME, "Plugin execute called with action: " + action);
 
@@ -44,45 +43,25 @@ public class LocalNotification extends CordovaPlugin {
     /*
      * Determine which action of the plugin needs to be invoked
      */
-    final String alarmId = alarmOptions.getNotificationId();
-
+    String alarmId = alarmOptions.getNotificationId();
     if (action.equalsIgnoreCase("add")) {
+        final boolean daily = alarmOptions.isRepeatDaily();
+        final String title = alarmOptions.getAlarmTitle();
+        final String subTitle = alarmOptions.getAlarmSubTitle();
+        final String ticker = alarmOptions.getAlarmTicker();
 
-        cordova.getThreadPool().execute(new Runnable() {
-                public void run() {
-                    final boolean daily = alarmOptions.isRepeatDaily();
-                    final String title = alarmOptions.getAlarmTitle();
-                    final String subTitle = alarmOptions.getAlarmSubTitle();
-                    final String ticker = alarmOptions.getAlarmTicker();
-                    
-                    persistAlarm(alarmId, optionsArr);
-                    add(daily, title, subTitle, ticker, alarmId, alarmOptions.getCal());
-                    callbackContext.success();
-                }
-        });
-
+        persistAlarm(alarmId, optionsArr);
+        this.add(daily, title, subTitle, ticker, alarmId, alarmOptions.getCal());
+        callbackContext.success();
         result = true;
     } else if (action.equalsIgnoreCase("cancel")) {
-
-        cordova.getThreadPool().execute(new Runnable() {
-                public void run() {
-                    unpersistAlarm(alarmId);
-                    cancelNotification(alarmId);
-                    callbackContext.success();
-                }
-        });
-        
+        unpersistAlarm(alarmId);
+        this.cancelNotification(alarmId);
+        callbackContext.success();
         result = true;
-        
     } else if (action.equalsIgnoreCase("cancelall")) {
-
-        cordova.getThreadPool().execute(new Runnable() {
-                public void run() {
-                    cancelAllNotifications();
-                    callbackContext.success();
-                }
-        });
-        
+        this.cancelAllNotifications();
+        callbackContext.success();
         result = true;
     }
 
