@@ -7,11 +7,24 @@ id="com.phonegap.plugins.localnotification"
     <name>LocalNotification</name>
     <description>LocalNotification Plugin</description>
     <license>Apache 2.0</license>
-    <keywords>cordova,local,notification</keywords>
+    <keywords>cordova,local,notification,badge</keywords>
 
     <js-module src="www/LocalNotification.js" name="LocalNotification">
         <clobbers target="window.plugins.localNotification" />
     </js-module>
+	
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+		    <feature name="LocalNotification">
+			    <param name="ios-package" value="LocalNotification"/>
+		    </feature>
+        </config-file>
+
+	    <header-file src="src/ios/LocalNotification.h" />
+	    <source-file src="src/ios/LocalNotification.m" />
+    </platform>
+
     
     <!-- android -->
     <platform name="android">
