@@ -12,6 +12,10 @@ id="com.phonegap.plugins.localnotification"
     <js-module src="www/LocalNotification.js" name="LocalNotification">
         <clobbers target="window.plugins.localNotification" />
     </js-module>
+
+ 	<engines>
+		<engine name="cordova" version="&gt;=3.0.0" />
+	</engines>
 	
     <!-- ios -->
     <platform name="ios">
